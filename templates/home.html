@@ -1,115 +1,244 @@
 {% extends 'base.html' %}
 
-{% block title %}Home - Job Search Tracker{% endblock %}
+{% block title %}Job Search Tracker - Login & Register{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <!-- Hero Section -->
-    <div class="row align-items-center mb-5">
-        <div class="col-lg-6">
-            <h1 class="display-4 fw-bold text-primary mb-4">
-                <i class="fas fa-briefcase me-3"></i>Job Search Tracker
-            </h1>
-            <p class="lead mb-4">
-                Take control of your job search journey. Track applications, manage interviews, 
-                and land your dream job with our comprehensive tracking system.
-            </p>
-            {% if not user.is_authenticated %}
-                <div class="d-flex gap-3">
-                    <a href="{% url 'users:register' %}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-user-plus me-2"></i>Get Started
-                    </a>
-                    <a href="{% url 'users:login' %}" class="btn btn-outline-primary btn-lg">
-                        <i class="fas fa-sign-in-alt me-2"></i>Login
-                    </a>
-                </div>
-            {% else %}
-                <div class="d-flex gap-3">
-                    <a href="{% url 'users:dashboard' %}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
-                    </a>
-                </div>
-            {% endif %}
-        </div>
-        <div class="col-lg-6 text-center">
-            <i class="fas fa-chart-line text-primary" style="font-size: 15rem; opacity: 0.1;"></i>
-        </div>
-    </div>
-
-    <!-- Features Section -->
-    <div class="row mb-5">
-        <div class="col-12 text-center mb-4">
-            <h2 class="fw-bold">Why Choose Our Job Tracker?</h2>
-            <p class="text-muted">Everything you need to organize and optimize your job search</p>
-        </div>
-    </div>
-
-    <div class="row g-4 mb-5">
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body text-center p-4">
-                    <div class="mb-3">
-                        <i class="fas fa-clipboard-list fa-3x text-primary"></i>
+{% if not user.is_authenticated %}
+<!-- Landing Page for Unauthenticated Users -->
+<div class="container-fluid bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center min-vh-75">
+            <div class="col-lg-6">
+                <h1 class="display-3 fw-bold mb-4">
+                    <i class="fas fa-briefcase me-3"></i>Job Search Tracker
+                </h1>
+                <p class="lead mb-4 fs-4">
+                    Take control of your job search journey. Track applications, manage interviews, 
+                    and land your dream job with our comprehensive tracking system.
+                </p>
+                <div class="row">
+                    <div class="col-sm-6 mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-check-circle me-2 text-warning"></i>
+                            <span>Track Applications</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-check-circle me-2 text-warning"></i>
+                            <span>Schedule Interviews</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle me-2 text-warning"></i>
+                            <span>Monitor Progress</span>
+                        </div>
                     </div>
-                    <h5 class="card-title">Track Applications</h5>
-                    <p class="card-text">Keep track of all your job applications in one place. Never lose track of where you've applied or what stage you're in.</p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <!-- Login/Register Card -->
+                <div class="card shadow-lg border-0" style="max-width: 450px; margin: 0 auto;">
+                    <div class="card-header bg-white border-0 text-center py-4">
+                        <h3 class="text-dark mb-0">Get Started Today</h3>
+                        <p class="text-muted mb-0">Join thousands of successful job seekers</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-grid gap-3">
+                            <a href="{% url 'users:register' %}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>Create Account
+                            </a>
+                            <a href="{% url 'users:login' %}" class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                            </a>
+                        </div>
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt me-1"></i>
+                                100% Free • No Credit Card Required
+                            </small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
+<!-- Features Section -->
+<div class="container py-5">
+    <div class="row text-center mb-5">
+        <div class="col-12">
+            <h2 class="fw-bold mb-3">Everything You Need to Land Your Dream Job</h2>
+            <p class="text-muted">Streamline your job search with powerful tracking and organization tools</p>
+        </div>
+    </div>
+    
+    <div class="row g-4">
         <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body text-center p-4">
+            <div class="card border-0 h-100 text-center">
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-list-alt fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">Organize Applications</h5>
+                    <p class="card-text text-muted">
+                        Keep track of all your job applications in one centralized location. 
+                        Never lose track of where you've applied or what stage you're in.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card border-0 h-100 text-center">
+                <div class="card-body p-4">
                     <div class="mb-3">
                         <i class="fas fa-calendar-check fa-3x text-success"></i>
                     </div>
                     <h5 class="card-title">Schedule Interviews</h5>
-                    <p class="card-text">Manage your interview schedule and never miss an important meeting. Get reminders and prepare effectively.</p>
+                    <p class="card-text text-muted">
+                        Manage your interview schedule and never miss an important 
+                        meeting with potential employers. Get reminders and prepare effectively.
+                    </p>
                 </div>
             </div>
         </div>
-
+        
         <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body text-center p-4">
+            <div class="card border-0 h-100 text-center">
+                <div class="card-body p-4">
                     <div class="mb-3">
-                        <i class="fas fa-chart-bar fa-3x text-info"></i>
+                        <i class="fas fa-chart-line fa-3x text-info"></i>
                     </div>
-                    <h5 class="card-title">Analytics & Insights</h5>
-                    <p class="card-text">Get valuable insights into your job search progress with detailed analytics and performance tracking.</p>
+                    <h5 class="card-title">Track Progress</h5>
+                    <p class="card-text text-muted">
+                        Monitor your job search progress with detailed analytics 
+                        and insights to improve your strategy and success rate.
+                    </p>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Stats Section -->
-    {% if user.is_authenticated %}
+<!-- Call to Action Section -->
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h3 class="fw-bold mb-3">Ready to Transform Your Job Search?</h3>
+                <p class="text-muted mb-4">
+                    Join thousands of job seekers who have streamlined their job search process 
+                    and increased their success rate with our powerful tracking tools.
+                </p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a href="{% url 'users:register' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-rocket me-2"></i>Start Free Today
+                    </a>
+                    <a href="{% url 'users:login' %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Already Have Account?
+                    </a>
+                </div>
+                <div class="mt-3">
+                    <small class="text-muted">
+                        <i class="fas fa-users me-1"></i>
+                        Trusted by 10,000+ job seekers worldwide
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- Authenticated User Dashboard Preview -->
+<div class="container py-5">
     <div class="row">
         <div class="col-12">
-            <div class="card border-0 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-1">Welcome back, {{ user.username }}!</h1>
+                    <p class="text-muted mb-0">Ready to continue your job search journey?</p>
+                </div>
+                <a href="{% url 'users:dashboard' %}" class="btn btn-primary">
+                    <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats for Authenticated Users -->
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card dashboard-card text-center">
                 <div class="card-body">
-                    <div class="row text-center">
+                    <i class="fas fa-briefcase fa-2x text-primary mb-2"></i>
+                    <h3 class="card-title">0</h3>
+                    <p class="card-text text-muted">Applications</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card dashboard-card text-center">
+                <div class="card-body">
+                    <i class="fas fa-calendar-check fa-2x text-success mb-2"></i>
+                    <h3 class="card-title">0</h3>
+                    <p class="card-text text-muted">Interviews</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card dashboard-card text-center">
+                <div class="card-body">
+                    <i class="fas fa-envelope fa-2x text-warning mb-2"></i>
+                    <h3 class="card-title">0</h3>
+                    <p class="card-text text-muted">Follow-ups</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card dashboard-card text-center">
+                <div class="card-body">
+                    <i class="fas fa-trophy fa-2x text-info mb-2"></i>
+                    <h3 class="card-title">0</h3>
+                    <p class="card-text text-muted">Offers</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions for Authenticated Users -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card dashboard-card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
                         <div class="col-md-3">
-                            <h3 class="text-primary">{{ user.username }}</h3>
-                            <p class="text-muted">Welcome back!</p>
+                            <a href="#" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-plus me-2"></i>Add Application
+                            </a>
                         </div>
                         <div class="col-md-3">
-                            <h3 class="text-info">0</h3>
-                            <p class="text-muted">Applications</p>
+                            <a href="#" class="btn btn-outline-success w-100">
+                                <i class="fas fa-calendar-plus me-2"></i>Schedule Interview
+                            </a>
                         </div>
                         <div class="col-md-3">
-                            <h3 class="text-success">0</h3>
-                            <p class="text-muted">Interviews</p>
+                            <a href="{% url 'users:profile' %}" class="btn btn-outline-info w-100">
+                                <i class="fas fa-user-edit me-2"></i>Edit Profile
+                            </a>
                         </div>
                         <div class="col-md-3">
-                            <h3 class="text-warning">0</h3>
-                            <p class="text-muted">Offers</p>
+                            <a href="#" class="btn btn-outline-warning w-100">
+                                <i class="fas fa-chart-bar me-2"></i>View Reports
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    {% endif %}
 </div>
+{% endif %}
 {% endblock %}

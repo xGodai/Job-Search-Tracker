@@ -9,7 +9,7 @@ from .forms import CustomUserCreationForm, CustomAuthenticationForm, ProfileUpda
 def register_view(request):
     """User registration view"""
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('users:dashboard')
     
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -17,7 +17,7 @@ def register_view(request):
             user = form.save()
             username = form.cleaned_data.get('username')
             messages.success(request, f'Account created for {username}! You can now log in.')
-            return redirect('login')
+            return redirect('users:login')
     else:
         form = CustomUserCreationForm()
     
@@ -27,7 +27,7 @@ def register_view(request):
 def login_view(request):
     """User login view"""
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('users:dashboard')
     
     if request.method == 'POST':
         form = CustomAuthenticationForm(request, data=request.POST)
@@ -41,7 +41,7 @@ def login_view(request):
                 next_page = request.GET.get('next')
                 if next_page:
                     return redirect(next_page)
-                return redirect('dashboard')
+                return redirect('users:dashboard')
     else:
         form = CustomAuthenticationForm()
     
