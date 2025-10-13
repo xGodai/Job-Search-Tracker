@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Job Search Tracker{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1><i class="fas fa-tachometer-alt me-2"></i>Dashboard</h1>
+                <span class="badge bg-primary fs-6">Welcome, {{ user.username }}!</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Profile Summary Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card dashboard-card h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-user-circle fa-4x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">{{ user.full_name|default:user.username }}</h5>
+                    <p class="card-text text-muted">{{ user.email }}</p>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            Member since {{ user.date_joined|date:"M d, Y" }}
+                        </small>
+                    </p>
+                    <a href="{% url 'users:profile' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-edit me-1"></i>Edit Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="col-md-8 mb-4">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="card dashboard-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-briefcase fa-2x text-info mb-2"></i>
+                            <h3 class="card-title">0</h3>
+                            <p class="card-text">Job Applications</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card dashboard-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-calendar-check fa-2x text-success mb-2"></i>
+                            <h3 class="card-title">0</h3>
+                            <p class="card-text">Interviews Scheduled</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card dashboard-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-envelope fa-2x text-warning mb-2"></i>
+                            <h3 class="card-title">0</h3>
+                            <p class="card-text">Follow-ups Pending</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="card dashboard-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-trophy fa-2x text-primary mb-2"></i>
+                            <h3 class="card-title">0</h3>
+                            <p class="card-text">Offers Received</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card dashboard-card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-2">
+                            <a href="#" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-plus me-1"></i>Add Job Application
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="#" class="btn btn-outline-info w-100">
+                                <i class="fas fa-calendar-plus me-1"></i>Schedule Interview
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="#" class="btn btn-outline-success w-100">
+                                <i class="fas fa-chart-bar me-1"></i>View Reports
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="#" class="btn btn-outline-warning w-100">
+                                <i class="fas fa-cog me-1"></i>Settings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card dashboard-card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Recent Activity</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center py-4">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No recent activity to display.</p>
+                        <p class="text-muted">Start by adding your first job application!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
