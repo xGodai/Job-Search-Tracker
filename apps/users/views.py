@@ -3,6 +3,8 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.conf import settings
 from .forms import CustomUserCreationForm, CustomAuthenticationForm, ProfileUpdateForm
 
 
@@ -38,9 +40,10 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f'Welcome back, {username}!')
-                next_page = request.GET.get('next')
-                if next_page:
-                    return redirect(next_page)
+                # Support next parameter from POST (hidden input) or GET with safety check
+                raw_next = request.POST.get('next') or request.GET.get('next')
+                if raw_next and url_has_allowed_host_and_scheme(raw_next, allowed_hosts={request.get_host()}):
+                    return redirect(raw_next)
                 return redirect('users:dashboard')
     else:
         form = CustomAuthenticationForm()
@@ -65,14 +68,13 @@ def dashboard_view(request):
 
 @login_required
 def profile_view(request):
-    """User profile view and edit"""
+    """User profile edit page (accessed via direct link or dashboard button)."""
     if request.method == 'POST':
         form = ProfileUpdateForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, 'Your profile has been updated successfully!')
-            return redirect('profile')
+            return redirect('users:profile')
     else:
         form = ProfileUpdateForm(instance=request.user)
-    
     return render(request, 'users/profile.html', {'form': form})

@@ -14,7 +14,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">
-                <i class="fas fa-briefcase me-2"></i>Job Tracker
+                Job Tracker
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -22,16 +22,7 @@
             </button>
             
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Home</a>
-                    </li>
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'users:dashboard' %}">Dashboard</a>
-                        </li>
-                    {% endif %}
-                </ul>
+                <ul class="navbar-nav me-auto"></ul>
                 
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
@@ -40,8 +31,8 @@
                                 <i class="fas fa-user me-1"></i>{{ user.username }}
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{% url 'users:profile' %}">
-                                    <i class="fas fa-user-edit me-2"></i>Profile
+                                <li><a class="dropdown-item" href="{% url 'users:dashboard' %}">
+                                    <i class="fas fa-gauge-high me-2"></i>Dashboard
                                 </a></li>
                                 {% if user.is_staff %}
                                     <li><a class="dropdown-item" href="{% url 'admin:index' %}">
