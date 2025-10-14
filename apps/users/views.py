@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.conf import settings
 from .forms import CustomUserCreationForm, CustomAuthenticationForm, ProfileUpdateForm
+from apps.core.forms import JobApplicationForm
 
 
 def register_view(request):
@@ -60,21 +61,51 @@ def logout_view(request):
 
 @login_required
 def dashboard_view(request):
-    """User dashboard view"""
+    """User dashboard view with embedded profile editing and job application form"""
+    profile_form = None
+    job_application_form = None
+    
+    if request.method == 'POST':
+        if 'update_profile' in request.POST:
+            profile_form = ProfileUpdateForm(request.POST, instance=request.user)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, 'Your profile has been updated successfully!')
+                return redirect('users:dashboard')
+        elif 'add_job_application' in request.POST:
+            job_application_form = JobApplicationForm(request.POST)
+            if job_application_form.is_valid():
+                job_application = job_application_form.save(commit=False)
+                job_application.user = request.user
+                job_application.save()
+                messages.success(request, f'Job application for {job_application.position_title} at {job_application.company_name} has been added!')
+                return redirect('users:dashboard')
+    
+    # Initialize forms if not set by POST processing
+    if profile_form is None:
+        profile_form = ProfileUpdateForm(instance=request.user)
+    if job_application_form is None:
+        job_application_form = JobApplicationForm()
+    
+    # Get user's job applications for dashboard stats
+    job_applications = request.user.job_applications.all()
+    stats = {
+        'total_applications': job_applications.count(),
+        'interviews_scheduled': job_applications.filter(status='interview_scheduled').count(),
+        'offers_received': job_applications.filter(status='offer_received').count(),
+        'under_review': job_applications.filter(status='under_review').count(),
+    }
+    
     return render(request, 'users/dashboard.html', {
-        'user': request.user
+        'user': request.user,
+        'profile_form': profile_form,
+        'job_application_form': job_application_form,
+        'job_applications': job_applications[:5],  # Recent 5 applications
+        'stats': stats,
     })
 
 
 @login_required
 def profile_view(request):
-    """User profile edit page (accessed via direct link or dashboard button)."""
-    if request.method == 'POST':
-        form = ProfileUpdateForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Your profile has been updated successfully!')
-            return redirect('users:profile')
-    else:
-        form = ProfileUpdateForm(instance=request.user)
-    return render(request, 'users/profile.html', {'form': form})
+    """Redirect to dashboard since profile editing is now embedded there"""
+    return redirect('users:dashboard')
