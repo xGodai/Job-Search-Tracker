@@ -41,13 +41,14 @@ class AuthViewTests(TestCase):
             'password': 'testpass123'
         })
         self.assertEqual(response.status_code, 302)  # Redirect after successful login
-        self.assertRedirects(response, reverse('users:dashboard'))
+        self.assertRedirects(response, reverse('home'))
 
     def test_profile_view_renders_when_logged_in(self):
         self.client.login(username='testuser', password='testpass123')
         response = self.client.get(reverse('users:profile'))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Edit Profile')
+        # Profile now redirects to home (dashboard)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('home'))
 
     def test_profile_requires_login_then_renders(self):
         profile_url = reverse('users:profile')
@@ -55,17 +56,21 @@ class AuthViewTests(TestCase):
         response = self.client.get(profile_url)
         self.assertEqual(response.status_code, 302)
         self.assertIn(login_url, response.url)
-        # Login with next pointing to profile should land on profile page
+        # Login with next pointing to profile should redirect there
         response = self.client.post(f"{login_url}?next={profile_url}", {
             'username': 'testuser',
             'password': 'testpass123'
-        })
-        self.assertRedirects(response, profile_url)
+        }, follow=False)
+        # Should redirect to profile_url
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, profile_url)
 
     def test_dashboard_requires_login(self):
         dashboard_url = reverse('users:dashboard')
         response = self.client.get(dashboard_url)
         self.assertEqual(response.status_code, 302)
+        # Dashboard now redirects to home
+        # But if not logged in, the @login_required decorator redirects to login first
         self.assertIn(reverse('users:login'), response.url)
 
     def test_external_next_ignored(self):
@@ -75,5 +80,5 @@ class AuthViewTests(TestCase):
             'username': 'testuser',
             'password': 'testpass123'
         })
-        # Should ignore external next and go to dashboard
-        self.assertRedirects(response, reverse('users:dashboard'))
+        # Should ignore external next and go to home
+        self.assertRedirects(response, reverse('home'))

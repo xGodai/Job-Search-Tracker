@@ -135,5 +135,5 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 # Login URLs
 LOGIN_URL = 'users:login'
-LOGIN_REDIRECT_URL = 'users:dashboard'
+LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'

@@ -31,15 +31,6 @@
                                 <i class="fas fa-user me-1"></i>{{ user.username }}
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{% url 'users:dashboard' %}">
-                                    <i class="fas fa-gauge-high me-2"></i>Dashboard
-                                </a></li>
-                                {% if user.is_staff %}
-                                    <li><a class="dropdown-item" href="{% url 'admin:index' %}">
-                                        <i class="fas fa-cog me-2"></i>Admin Panel
-                                    </a></li>
-                                {% endif %}
-                                <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{% url 'users:logout' %}">
                                     <i class="fas fa-sign-out-alt me-2"></i>Logout
                                 </a></li>
