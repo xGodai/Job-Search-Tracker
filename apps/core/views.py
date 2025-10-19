@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from apps.users.forms import ProfileUpdateForm
 from apps.core.forms import JobApplicationForm
+from apps.core.models import JobApplication
 from django.contrib import messages
 
 
@@ -18,6 +19,7 @@ def home(request):
     # Dashboard logic for authenticated users
     profile_form = None
     job_application_form = None
+    editing_application_id = None
     
     if request.method == 'POST':
         if 'update_profile' in request.POST:
@@ -25,7 +27,7 @@ def home(request):
             if profile_form.is_valid():
                 profile_form.save()
                 messages.success(request, 'Your profile has been updated successfully!')
-                return render(request, 'home.html', get_dashboard_context(request, profile_form, job_application_form))
+                return redirect('home')
         elif 'add_job_application' in request.POST:
             job_application_form = JobApplicationForm(request.POST)
             if job_application_form.is_valid():
@@ -33,7 +35,24 @@ def home(request):
                 job_application.user = request.user
                 job_application.save()
                 messages.success(request, f'Job application for {job_application.position_title} at {job_application.company_name} has been added!')
-                return render(request, 'home.html', get_dashboard_context(request, profile_form, job_application_form))
+                return redirect('home')
+        elif 'edit_job_application' in request.POST:
+            application_id = request.POST.get('application_id')
+            application = get_object_or_404(JobApplication, id=application_id, user=request.user)
+            job_application_form = JobApplicationForm(request.POST, instance=application)
+            if job_application_form.is_valid():
+                job_application_form.save()
+                messages.success(request, f'Job application for {application.position_title} at {application.company_name} has been updated!')
+                return redirect('home')
+            else:
+                editing_application_id = application_id
+    
+    # Check if we're editing an existing application
+    if request.GET.get('edit'):
+        application_id = request.GET.get('edit')
+        application = get_object_or_404(JobApplication, id=application_id, user=request.user)
+        job_application_form = JobApplicationForm(instance=application)
+        editing_application_id = application_id
     
     # Initialize forms if not set by POST processing
     if profile_form is None:
@@ -41,10 +60,10 @@ def home(request):
     if job_application_form is None:
         job_application_form = JobApplicationForm()
     
-    return render(request, 'home.html', get_dashboard_context(request, profile_form, job_application_form))
+    return render(request, 'home.html', get_dashboard_context(request, profile_form, job_application_form, editing_application_id))
 
 
-def get_dashboard_context(request, profile_form, job_application_form):
+def get_dashboard_context(request, profile_form, job_application_form, editing_application_id=None):
     """Helper function to get dashboard context for authenticated users"""
     # Get user's job applications for dashboard stats
     job_applications = request.user.job_applications.all()
@@ -62,4 +81,5 @@ def get_dashboard_context(request, profile_form, job_application_form):
         'job_applications': job_applications[:5],  # Recent 5 applications
         'stats': stats,
         'is_dashboard': True,  # Flag to indicate dashboard mode
+        'editing_application_id': editing_application_id,
     }
