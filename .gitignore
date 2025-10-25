@@ -173,8 +173,8 @@ Thumbs.db
 
 # Django specific
 media/
+# Collected static files (don't commit collectstatic output)
 staticfiles/
-static/
 
 # Local development
 local_settings.py

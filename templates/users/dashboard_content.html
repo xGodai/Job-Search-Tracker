@@ -52,6 +52,37 @@
                         </div>
                     </div>
                 </div>
+                <!-- Targets Card -->
+                <div class="col-md-12 mb-3">
+                    <div class="card dashboard-card">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-bullseye me-2"></i>Application Targets</h5>
+                            <p class="text-muted small mb-2">Daily target: {{ targets.daily_target }} — Weekly target: {{ targets.weekly_target }} (resets every Monday)</p>
+
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <small>Today</small>
+                                    <small>{{ targets.daily_count }} / {{ targets.daily_target }}</small>
+                                </div>
+                                <div class="progress mt-1" style="height: 12px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ targets.daily_progress_pct }}%;" aria-valuenow="{{ targets.daily_progress_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="d-flex justify-content-between">
+                                    <small>This week (since {{ targets.week_start|date:"M d" }})</small>
+                                    <small>{{ targets.weekly_count }} / {{ targets.weekly_target }}</small>
+                                </div>
+                                <div class="progress mt-1" style="height: 12px;">
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ targets.weekly_progress_pct }}%;" aria-valuenow="{{ targets.weekly_progress_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+                            <p class="small text-muted mt-2">Next weekly reset: {{ targets.next_reset|date:"M d, Y" }}</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-6 mb-3">
                     <div class="card dashboard-card text-center">
                         <div class="card-body">
