@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from apps.users.forms import ProfileUpdateForm
 from apps.core.forms import JobApplicationForm
 from apps.core.models import JobApplication
+from datetime import date, timedelta
 from django.contrib import messages
 
 
@@ -73,6 +74,33 @@ def get_dashboard_context(request, profile_form, job_application_form, editing_a
         'offers_received': job_applications.filter(status='offer_received').count(),
         'under_review': job_applications.filter(status='under_review').count(),
     }
+    # Targets and progress calculations
+    # Default targets: 2 per day, 10 per week
+    DAILY_TARGET = 2
+    WEEKLY_TARGET = 10
+
+    today = date.today()
+    # Week start (Monday)
+    week_start = today - timedelta(days=today.weekday())
+
+    daily_count = job_applications.filter(application_date=today).count()
+    weekly_count = job_applications.filter(application_date__gte=week_start, application_date__lte=today).count()
+
+    def pct(count, target):
+        if target <= 0:
+            return 0
+        return min(100, int((count / target) * 100))
+
+    targets = {
+        'daily_target': DAILY_TARGET,
+        'weekly_target': WEEKLY_TARGET,
+        'daily_count': daily_count,
+        'weekly_count': weekly_count,
+        'daily_progress_pct': pct(daily_count, DAILY_TARGET),
+        'weekly_progress_pct': pct(weekly_count, WEEKLY_TARGET),
+        'week_start': week_start,
+        'next_reset': week_start + timedelta(days=7),
+    }
     
     return {
         'user': request.user,
@@ -80,6 +108,7 @@ def get_dashboard_context(request, profile_form, job_application_form, editing_a
         'job_application_form': job_application_form,
         'job_applications': job_applications[:5],  # Recent 5 applications
         'stats': stats,
+        'targets': targets,
         'is_dashboard': True,  # Flag to indicate dashboard mode
         'editing_application_id': editing_application_id,
     }
