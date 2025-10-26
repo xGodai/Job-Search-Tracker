@@ -4,6 +4,7 @@ from apps.users.forms import ProfileUpdateForm
 from apps.core.forms import JobApplicationForm
 from apps.core.models import JobApplication
 from datetime import date, timedelta
+from django.db.models import Q
 from django.contrib import messages
 
 
@@ -33,6 +34,9 @@ def home(request):
             job_application_form = JobApplicationForm(request.POST)
             if job_application_form.is_valid():
                 job_application = job_application_form.save(commit=False)
+                # If the user did not provide an application_date, default to today
+                if not job_application.application_date:
+                    job_application.application_date = date.today()
                 job_application.user = request.user
                 job_application.save()
                 messages.success(request, f'Job application for {job_application.position_title} at {job_application.company_name} has been added!')
@@ -83,8 +87,17 @@ def get_dashboard_context(request, profile_form, job_application_form, editing_a
     # Week start (Monday)
     week_start = today - timedelta(days=today.weekday())
 
-    daily_count = job_applications.filter(application_date=today).count()
-    weekly_count = job_applications.filter(application_date__gte=week_start, application_date__lte=today).count()
+    # Count applications by application_date, but also include recently created records
+    # where application_date may be missing or set incorrectly. We include created_at date
+    # as a fallback so newly added applications count toward today's/this week's targets.
+    daily_count = job_applications.filter(
+        Q(application_date=today) | Q(created_at__date=today)
+    ).count()
+
+    weekly_count = job_applications.filter(
+        Q(application_date__gte=week_start, application_date__lte=today)
+        | Q(created_at__date__gte=week_start, created_at__date__lte=today)
+    ).count()
 
     def pct(count, target):
         if target <= 0:

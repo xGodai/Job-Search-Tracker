@@ -1,4 +1,6 @@
+{% load static %}
 <!-- Dashboard Content (Included in home.html for authenticated users) -->
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 <div class="container py-4">
     <div class="row">
         <div class="col-12">
@@ -64,8 +66,8 @@
                                     <small>Today</small>
                                     <small>{{ targets.daily_count }} / {{ targets.daily_target }}</small>
                                 </div>
-                                <div class="progress mt-1" style="height: 12px;">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ targets.daily_progress_pct }}%;" aria-valuenow="{{ targets.daily_progress_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress mt-1 dashboard-progress-small">
+                                    <div class="progress-bar bg-success" role="progressbar" data-progress="{{ targets.daily_progress_pct }}" aria-valuemin="0" aria-valuemax="100" style="width:0%"></div>
                                 </div>
                             </div>
 
@@ -74,8 +76,8 @@
                                     <small>This week (since {{ targets.week_start|date:"M d" }})</small>
                                     <small>{{ targets.weekly_count }} / {{ targets.weekly_target }}</small>
                                 </div>
-                                <div class="progress mt-1" style="height: 12px;">
-                                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ targets.weekly_progress_pct }}%;" aria-valuenow="{{ targets.weekly_progress_pct }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress mt-1 dashboard-progress-small">
+                                    <div class="progress-bar bg-info" role="progressbar" data-progress="{{ targets.weekly_progress_pct }}" aria-valuemin="0" aria-valuemax="100" style="width:0%"></div>
                                 </div>
                             </div>
 
@@ -534,42 +536,8 @@
     </div>
 </div>
 
-{% if profile_form.errors %}
-<script>
-    // Auto-show profile edit form if there are validation errors
-    document.addEventListener('DOMContentLoaded', function() {
-        var profileForm = new bootstrap.Collapse(document.getElementById('profileEditForm'));
-        profileForm.show();
-    });
-</script>
-{% endif %}
+<!-- Dashboard data flags: template sets these to indicate the page should auto-open certain collapses -->
+<div id="dashboard-data" style="display:none" data-show-profile="{% if profile_form.errors %}1{% else %}0{% endif %}" data-show-jobapp="{% if job_application_form.errors %}1{% else %}0{% endif %}"></div>
 
-{% if job_application_form.errors %}
-<script>
-    // Auto-show job application form if there are validation errors
-    document.addEventListener('DOMContentLoaded', function() {
-        var jobAppForm = new bootstrap.Collapse(document.getElementById('jobApplicationForm'));
-        jobAppForm.show();
-    });
-</script>
-{% endif %}
-
-<script>
-    // Handle contact info toggle icon
-    document.addEventListener('DOMContentLoaded', function() {
-        const contactInfo = document.getElementById('contactInfo');
-        const toggleIcon = document.getElementById('contactToggleIcon');
-        
-        if (contactInfo && toggleIcon) {
-            contactInfo.addEventListener('show.bs.collapse', function() {
-                toggleIcon.classList.remove('fa-chevron-right');
-                toggleIcon.classList.add('fa-chevron-down');
-            });
-            
-            contactInfo.addEventListener('hide.bs.collapse', function() {
-                toggleIcon.classList.remove('fa-chevron-down');
-                toggleIcon.classList.add('fa-chevron-right');
-            });
-        }
-    });
-</script>
+<!-- Load dashboard JS (handles progress bars, toggles, etc.) -->
+<script src="{% static 'js/dashboard.js' %}" defer></script>

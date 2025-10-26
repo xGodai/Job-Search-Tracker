@@ -1,0 +1,15 @@
+/* Dashboard-specific styles (moved out of templates) */
+.dashboard-progress-small {
+    height: 12px;
+}
+
+/* Keep spacing consistent with original design */
+.targets-card .card-body {
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+}
+
+/* Minor tweaks to match the screenshot's dark card look when using a dark theme */
+.dashboard-card .card-body .card-title {
+    margin-bottom: .5rem;
+}
