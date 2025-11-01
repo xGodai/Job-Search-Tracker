@@ -22,6 +22,7 @@ def home(request):
     profile_form = None
     job_application_form = None
     editing_application_id = None
+    show_job_form = False
     
     if request.method == 'POST':
         if 'update_profile' in request.POST:
@@ -41,6 +42,9 @@ def home(request):
                 job_application.save()
                 messages.success(request, f'Job application for {job_application.position_title} at {job_application.company_name} has been added!')
                 return redirect('home')
+            else:
+                # show the job application form again with validation errors
+                show_job_form = True
         elif 'edit_job_application' in request.POST:
             application_id = request.POST.get('application_id')
             application = get_object_or_404(JobApplication, id=application_id, user=request.user)
@@ -51,13 +55,21 @@ def home(request):
                 return redirect('home')
             else:
                 editing_application_id = application_id
+                show_job_form = True
     
-    # Check if we're editing an existing application
+    # Check if we're editing an existing application or opening a new blank form
     if request.GET.get('edit'):
         application_id = request.GET.get('edit')
         application = get_object_or_404(JobApplication, id=application_id, user=request.user)
         job_application_form = JobApplicationForm(instance=application)
         editing_application_id = application_id
+        show_job_form = True
+    elif request.GET.get('new'):
+        # User explicitly requested to create a new application; show blank form
+        # Pre-fill application_date with today for convenience
+        job_application_form = JobApplicationForm(initial={'application_date': date.today()})
+        editing_application_id = None
+        show_job_form = True
     
     # Initialize forms if not set by POST processing
     if profile_form is None:
@@ -65,10 +77,10 @@ def home(request):
     if job_application_form is None:
         job_application_form = JobApplicationForm()
     
-    return render(request, 'home.html', get_dashboard_context(request, profile_form, job_application_form, editing_application_id))
+    return render(request, 'home.html', get_dashboard_context(request, profile_form, job_application_form, editing_application_id, show_job_form))
 
 
-def get_dashboard_context(request, profile_form, job_application_form, editing_application_id=None):
+def get_dashboard_context(request, profile_form, job_application_form, editing_application_id=None, show_job_form=False):
     """Helper function to get dashboard context for authenticated users"""
     # Get user's job applications for dashboard stats
     job_applications = request.user.job_applications.all()
@@ -124,4 +136,5 @@ def get_dashboard_context(request, profile_form, job_application_form, editing_a
         'targets': targets,
         'is_dashboard': True,  # Flag to indicate dashboard mode
         'editing_application_id': editing_application_id,
+        'show_job_form': show_job_form,
     }
