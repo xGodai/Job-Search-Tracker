@@ -2,6 +2,7 @@
 <!-- Dashboard Content (Included in home.html for authenticated users) -->
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 <div class="container py-4">
+    
     <div class="row">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -206,7 +207,7 @@
     <!-- Job Application Form (Collapsible) -->
     <div class="row">
         <div class="col-12">
-            <div class="collapse{% if editing_application_id %} show{% endif %}" id="jobApplicationForm">
+            <div class="collapse{% if editing_application_id or show_job_form %} show{% endif %}" id="jobApplicationForm">
                 <div class="card dashboard-card mb-4">
                     <div class="card-header">
                         <h5 class="mb-0">
@@ -436,9 +437,9 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4 mb-2">
-                            <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#jobApplicationForm" aria-expanded="false" aria-controls="jobApplicationForm">
+                            <a href="?new=1" class="btn btn-outline-primary w-100">
                                 <i class="fas fa-plus me-1"></i>Add Job Application
-                            </button>
+                            </a>
                         </div>
                         <div class="col-md-4 mb-2">
                             <a href="#" class="btn btn-outline-info w-100">
@@ -537,7 +538,6 @@
 </div>
 
 <!-- Dashboard data flags: template sets these to indicate the page should auto-open certain collapses -->
-<div id="dashboard-data" style="display:none" data-show-profile="{% if profile_form.errors %}1{% else %}0{% endif %}" data-show-jobapp="{% if job_application_form.errors %}1{% else %}0{% endif %}"></div>
+<div id="dashboard-data" style="display:none" data-show-profile="{% if profile_form.errors %}1{% else %}0{% endif %}" data-show-jobapp="{% if show_job_form or job_application_form.errors %}1{% else %}0{% endif %}"></div>
 
-<!-- Load dashboard JS (handles progress bars, toggles, etc.) -->
-<script src="{% static 'js/dashboard.js' %}" defer></script>
+<!-- Load dashboard JS (handled in base.html to ensure Bootstrap is loaded first) -->

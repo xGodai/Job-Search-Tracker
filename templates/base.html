@@ -73,6 +73,31 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/main.js' %}"></script>
+    {% if is_dashboard %}
+        <!-- Dashboard-specific JS must load after Bootstrap so `bootstrap` is available -->
+        <script src="{% static 'js/dashboard.js' %}" defer></script>
+    {% endif %}
     {% block extra_js %}{% endblock %}
+    {% if is_dashboard %}
+        <!-- Fallback: ensure dashboard collapses open when server requests it (guards against timing/cache issues) -->
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                var dashboardData = document.getElementById('dashboard-data');
+                if (!dashboardData) return;
+                var showJob = dashboardData.getAttribute('data-show-jobapp') === '1';
+                if (showJob) {
+                    var el = document.getElementById('jobApplicationForm');
+                    if (el && window.bootstrap && typeof window.bootstrap.Collapse === 'function') {
+                        new window.bootstrap.Collapse(el).show();
+                    }
+                }
+            } catch (e) {
+                // swallow errors - this is a non-critical UI fallback
+                console && console.error && console.error('dashboard fallback error', e);
+            }
+        });
+        </script>
+    {% endif %}
 </body>
 </html>

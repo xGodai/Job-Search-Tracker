@@ -39,3 +39,8 @@ class JobApplicationForm(forms.ModelForm):
         self.fields['salary_range'].widget.attrs['placeholder'] = 'e.g., $50,000 - $70,000'
         self.fields['location'].widget.attrs['placeholder'] = 'e.g., New York, NY or Remote'
         self.fields['notes'].widget.attrs['placeholder'] = 'Any additional notes or thoughts about this application...'
+        # Allow the view to default application_date if user leaves it blank.
+        # The model requires application_date, but making the form field optional
+        # lets us set a sensible default (today) server-side before saving.
+        if 'application_date' in self.fields:
+            self.fields['application_date'].required = False
